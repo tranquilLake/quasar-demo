@@ -8,5 +8,95 @@
     <artifactId>quasar-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
 
+        <!-- quasar dependencies -->
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-core</artifactId>
+            <version>0.7.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-actors</artifactId>
+            <version>0.7.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-galaxy</artifactId>
+            <version>0.7.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-reactive-streams</artifactId>
+            <version>0.7.7</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>co.paralleluniverse</groupId>
+            <artifactId>quasar-kotlin</artifactId>
+            <version>0.7.7</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                    <compilerArguments>
+                        <extdirs>src/main/webapp/WEB-INF/lib</extdirs>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <id>getClasspathFilenames</id>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId> <!-- Run with "mvn compile maven-dependency-plugin:properties exec:exec" -->
+                <version>1.3.2</version>
+                <configuration>
+                    <mainClass>myDemo.quasarDemo.Main</mainClass>
+                    <workingDirectory>target/classes</workingDirectory>
+                    <executable>java</executable>
+                    <arguments>
+                        <!-- Turn off before production -->
+                        <argument>-Dco.paralleluniverse.fibers.verifyInstrumentation=true</argument>
+
+                        <!-- Quasar Agent -->
+                        <argument>-javaagent:${co.paralleluniverse:quasar-core:jar}</argument>
+
+                        <!-- Classpath -->
+                        <argument>-classpath</argument> <classpath/>
+
+                        <!-- Main class -->
+                        <argument>myDemo.quasarDemo.Main</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
