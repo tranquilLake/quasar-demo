@@ -5,6 +5,8 @@ import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.strands.SuspendableRunnable;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -122,21 +124,25 @@ public class Main {
      * fiber 中的thread local
      */
     private static void ThreadLocalInFiber() throws ExecutionException, InterruptedException {
-        String raw = "there is a car";
 
-        Fiber<String> fiber = new Fiber<>(() -> {
-            threadLocal.set(raw);
+        List<String> list = new ArrayList<>();
+        list.add("there is a car");
+        list.add("there is a house");
+        list.add("there is a tree");
+        list.add("there is a river");
 
-            workOne();
-            workTwo();
+        for (String s : list) {
+            Fiber<Object> fiber = new Fiber<>(() -> {
+                threadLocal.set(s);
 
-            return threadLocal.get();
-        });
+                workOne();
+                workTwo();
 
-        fiber.start();
+                String result = threadLocal.get();
+                System.out.println(result);
+            }).start();
+        }
 
-        String result = fiber.get();
-        System.out.println(result);
     }
 
     // 上面的demo中用到的thread local
